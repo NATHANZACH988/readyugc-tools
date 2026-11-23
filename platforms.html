@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where to start and how to sign up · ReadyUGC</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="course.css">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+.quiz fieldset{border:0;padding:0;margin:0 0 18px}
+.quiz legend{font-weight:700;margin-bottom:8px;font-size:1.02rem}
+.opts{display:grid;gap:8px}
+.opt{display:flex;align-items:center;gap:12px;min-height:48px;padding:10px 14px;margin:0;border:2px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);font-size:1rem;cursor:pointer}
+.opt input{width:22px;height:22px;flex:none;margin:0;accent-color:var(--accent)}
+.opt:has(input:checked){border-color:var(--accent);background:var(--soft)}
+.opt:has(input:focus-visible){outline:3px solid var(--accent);outline-offset:2px}
+.quiz select{min-height:48px;font-size:1rem}
+.pick{border:2px solid var(--accent);border-radius:18px;padding:20px;margin:18px 0;background:var(--card)}
+.pick .eyebrow{margin:0 0 4px;font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.pick h3{margin:0 0 6px;font-size:1.6rem;letter-spacing:-.01em}
+.others{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0;padding:0;list-style:none}
+.others a{display:inline-block;padding:6px 12px;border-radius:999px;background:var(--soft);font-weight:600;text-decoration:none}
+details.guide{padding:0;overflow:hidden}
+details.guide > summary{list-style:none;cursor:pointer;padding:16px 18px;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+details.guide > summary::-webkit-details-marker{display:none}
+details.guide > summary h3{margin:0;font-size:1.25rem;flex:1 1 auto}
+details.guide > summary .one{flex:1 1 100%;margin:0;color:var(--muted);font-size:.95rem}
+details.guide[open] > summary{border-bottom:1px solid var(--line)}
+.gbody{padding:4px 18px 18px}
+.pill{display:inline-block;font-size:.78rem;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--soft);color:var(--accent);white-space:nowrap}
+.pill.warn{background:var(--line);color:var(--muted)}
+.pill.done{background:var(--accent);color:var(--accent-ink)}
+ul.prep{list-style:none;padding:0;margin:8px 0}
+ul.prep li{margin:0}
+ul.prep label{display:flex;gap:12px;align-items:flex-start;min-height:44px;padding:8px 0;margin:0;color:var(--ink);font-size:1rem;cursor:pointer}
+ul.prep input{width:24px;height:24px;flex:none;margin:1px 0 0;accent-color:var(--accent)}
+.signup{display:flex;flex-direction:column;gap:8px;margin:14px 0}
+.signup .btn{text-align:center;min-height:48px;display:flex;align-items:center;justify-content:center;border-radius:999px}
+.facts{margin:4px 0;font-size:.92rem;color:var(--muted)}
+.quick{margin:0;text-align:center;font-weight:600;font-size:.92rem}
+.disclose{font-size:.9rem;border:1px dashed var(--accent);border-radius:10px;padding:8px 12px}
+.applinks{display:flex;gap:8px;flex-wrap:wrap}
+.applinks a{flex:1 1 140px;text-align:center}
+dl.pay{display:grid;grid-template-columns:minmax(96px,30%) 1fr;gap:6px 12px;margin:8px 0}
+dl.pay dt{font-weight:600}
+dl.pay dd{margin:0}
+.status{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:8px 0}
+@media (min-width:520px){.status{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.status .opt{justify-content:center;font-weight:600;font-size:.95rem;padding:8px}
+.nextact{background:var(--soft);border-radius:14px;padding:14px 16px;margin:12px 0}
+.nextact strong{display:block;margin-bottom:4px}
+.differ{border-left:4px solid var(--warn);background:var(--card);padding:10px 14px;border-radius:0 10px 10px 0}
+.miles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.mile{border:1px dashed var(--line);border-radius:14px;padding:14px;text-align:center}
+.mile strong{display:block}
+.mile span{font-size:.85rem;color:var(--muted)}
+.mile.earned{border:2px solid var(--accent);background:var(--soft)}
+</style>
+</head>
+<body>
+<main>
+<h1>Sign up on your first platform</h1>
+<p class="lead">Answer five quick questions and get one place to start. Then follow its guide: what to prepare, how to sign up and what to do next.</p>
+<p class="note">Signing up is free on every platform here. Nothing in this course promises you will be accepted or paid. Facts were checked on each platform's own pages on November 11, 2026, and each guide names its sources. Confirm on the platform before you rely on them.</p>
+
+<h2 id="p1">1. Where do you start?</h2>
+<form class="quiz" id="quiz" novalidate>
+<fieldset>
+<legend>Where do you live?</legend>
+<select id="country" aria-label="Where do you live?"></select>
+</fieldset>
+<fieldset>
+<legend>Are you 18 or older?</legend>
+<div class="opts" id="q-adult"></div>
+</fieldset>
+<fieldset>
+<legend>What do you have today?</legend>
+<div class="opts" id="q-samples"></div>
+</fieldset>
+<fieldset>
+<legend>Are you comfortable showing your face on camera?</legend>
+<div class="opts" id="q-camera"></div>
+</fieldset>
+<fieldset>
+<legend>How would you rather be paid?</legend>
+<div class="opts" id="q-pay"></div>
+</fieldset>
+<button class="btn" type="submit">Show my starting point</button>
+<p class="muted">Your answers stay in this browser. They are not saved to your account.</p>
+</form>
+<div id="result" aria-live="polite"></div>
+
+<h2 id="p2">2. Your platform guides</h2>
+<p>Every guide is open to you, whatever the suggestion above says. Tick what you have ready, sign up on the platform's own page, then set your application status here. Only you change the status: opening a sign-up page or finishing a checklist does not mark you as applied or approved.</p>
+<div id="guides"></div>
+
+<h2 id="p3">3. Your milestones</h2>
+<p class="muted">Milestones count what you have done. "Approved creator" appears only when you set a platform to Approved yourself.</p>
+<div class="miles" id="miles"></div>
+<p class="muted" id="sync"></p>
+</main>
+<script src="platforms.js"></script>
+<script>
+(function () {
+  'use strict';
+  var P = window.UGC_PLATFORMS;
+  var ANSWERS_KEY = 'ugcStartAnswersV1';
+  var STATES = [['', 'Not started'], ['submitted', 'Submitted'], ['approved', 'Approved'], ['declined', 'Declined']];
+
+  function el(tag, text, cls) { var e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; }
+  function store(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k)); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
+
+  /* Progress lives in course.js. Opened without it (a source preview), keep ticks in this browser only. */
+  function progress() {
+    if (window.CourseProgress) return window.CourseProgress;
+    var mem = store('ugcFlagsPreview') || {}, fs = [];
+    var update = function (ch) { Object.keys(ch).forEach(function (k) { if (ch[k]) mem[k] = 1; else delete mem[k]; }); store('ugcFlagsPreview', mem); fs.forEach(function (f) { f(); }); };
+    return { has: function (k) { return !!mem[k]; }, keys: function () { return Object.keys(mem); }, update: update,
+      flag: function (k, on) { var m = {}; m[k] = on; update(m); }, onChange: function (f) { fs.push(f); }, synced: function () { return false; },
+      ready: function (f) { f(); }, localKey: function (b) { return b; } };
+  }
+
+  function radios(box, name, options, value) {
+    options.forEach(function (o) {
+      var lab = el('label', null, 'opt'), r = el('input');
+      r.type = 'radio'; r.name = name; r.value = o[0]; r.checked = value === o[0];
+      lab.appendChild(r); lab.appendChild(document.createTextNode(o[1])); box.appendChild(lab);
+    });
+  }
+  function val(name) { var c = document.querySelector('input[name="' + name + '"]:checked'); return c ? c.value : ''; }
+
+  /* Nothing is drawn until course.js knows whose progress this is (a shared computer must not show the last buyer's). */
+  function start() { progress().ready(begin); }
+  function begin() {
+    var pr = progress();
+    var answersKey = pr.localKey(ANSWERS_KEY);
+    var saved = store(answersKey) || {};
+
+    /* ---------- 1. Questions and recommendation ---------- */
+    var sel = document.getElementById('country');
+    sel.appendChild(el('option', 'Choose your country', '')).value = '';
+    P.COUNTRIES.forEach(function (c) { var o = el('option', c.name); o.value = c.code; o.selected = saved.country === c.code; sel.appendChild(o); });
+    radios(document.getElementById('q-adult'), 'adult', [['yes', 'Yes, I am 18 or older'], ['no', 'Not yet']], saved.adult);
+    radios(document.getElementById('q-samples'), 'samples', [['none', 'Just my phone, no sample videos yet'], ['some', 'A few sample videos, no big following']], saved.samples);
+    radios(document.getElementById('q-camera'), 'camera', [['yes', 'Yes'], ['no', 'Not yet']], saved.camera);
+    radios(document.getElementById('q-pay'), 'pay', [['fixed', 'A set amount for each job'], ['own', 'I want to name my own price']], saved.pay);
+
+    var result = document.getElementById('result'), answers = null;
+    function showResult() {
+      result.textContent = '';
+      if (!answers) return;
+      var r = P.recommend(answers), box = el('div', null, 'pick');
+      if (r.pick) {
+        var p = P.byId(r.pick);
+        box.appendChild(el('p', 'Your best first stop', 'eyebrow'));
+        box.appendChild(el('h3', p.name));
+        box.appendChild(el('p', r.why));
+        var go = el('a', 'Open the ' + p.name + ' guide', 'btn'); go.href = '#guide-' + p.id;
+        go.addEventListener('click', function () { var d = document.getElementById('guide-' + p.id); if (d) d.open = true; });
+        box.appendChild(go);
+      } else {
+        var prep = P.PREP[r.prep];
+        box.appendChild(el('p', 'Before you sign up', 'eyebrow'));
+        box.appendChild(el('h3', prep.title));
+        box.appendChild(el('p', prep.text));
+        var link = el('a', prep.cta, 'btn'); link.href = prep.href; box.appendChild(link);
+      }
+      if (r.others.length) {
+        box.appendChild(el('p', r.pick ? 'Also open to you, from what you told us:' : 'Open to you now, from what you told us:', 'muted'));
+        var ul = el('ul', null, 'others');
+        r.others.forEach(function (id) { var li = el('li'), a = el('a', P.byId(id).name); a.href = '#guide-' + id; a.addEventListener('click', function () { document.getElementById('guide-' + id).open = true; }); li.appendChild(a); ul.appendChild(li); });
+        box.appendChild(ul);
+      }
+      box.appendChild(el('p', 'This is a suggestion, not a rule. Every guide below stays open to read.', 'muted'));
+      result.appendChild(box);
+      renderGuides();
+    }
+    function read() {
+      var a = { country: sel.value, adult: val('adult') === 'yes', adultAnswered: !!val('adult'), samples: val('samples'), camera: val('camera'), pay: val('pay') };
+      return a.country && a.adultAnswered && a.samples && a.camera && a.pay ? a : null;
+    }
+    document.getElementById('quiz').addEventListener('submit', function (e) {
+      e.preventDefault();
+      answers = read();
+      if (!answers) { result.textContent = ''; result.appendChild(el('p', 'Answer all five questions to see your starting point.', 'note')); return; }
+      store(answersKey, { country: answers.country, adult: val('adult'), samples: answers.samples, camera: answers.camera, pay: answers.pay });
+      showResult();
+      result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    answers = read();
+
+    /* ---------- 2. Guides ---------- */
+    var guides = document.getElementById('guides'), cards = {};
+    function key(p, rest) { return 'pf:' + p.id + ':' + rest; }
+    function status(p) { return P.currentStatus(pr.keys(), p.id); }
+    function setStatus(p, s) { pr.update(P.statusChanges(pr.keys(), p.id, s, Date.now())); }
+    /* After progress from two devices is merged, delete the older status keys so only the latest is kept. */
+    function tidy() {
+      var stale = {};
+      P.GUIDES.forEach(function (p) { P.staleStatusKeys(pr.keys(), p.id).forEach(function (k) { stale[k] = false; }); });
+      if (Object.keys(stale).length) pr.update(stale);
+    }
+    function prepCount(p) { return p.guide.prepare.filter(function (_, i) { return pr.has(key(p, 'prep:' + i)); }).length; }
+
+    function section(parent, title) { parent.appendChild(el('h4', title)); }
+    function list(parent, items, cls) { var ul = el('ul', null, cls); items.forEach(function (t) { ul.appendChild(el('li', t)); }); parent.appendChild(ul); return ul; }
+
+    function buildGuide(p) {
+      var d = el('details', null, 'card guide'); d.id = 'guide-' + p.id;
+      var sum = el('summary'), h = el('h3', p.name), pill = el('span', '', 'pill'), fit = el('span', '', 'pill warn');
+      sum.appendChild(h); sum.appendChild(fit); sum.appendChild(pill); sum.appendChild(el('p', p.guide.oneLine, 'one'));
+      d.appendChild(sum);
+      var b = el('div', null, 'gbody'); d.appendChild(b);
+
+      var facts = P.guideRows(p);
+      section(b, 'Who can join');
+      b.appendChild(el('p', facts.who));
+      b.appendChild(el('p', 'Source: ' + facts.source, 'facts'));
+
+      section(b, 'Before you sign up');
+      var prepNote = el('p', '', 'muted'); b.appendChild(prepNote);
+      var ul = el('ul', null, 'prep');
+      p.guide.prepare.forEach(function (t, i) {
+        var li = el('li'), lab = el('label'), cb = el('input'); cb.type = 'checkbox';
+        cb.addEventListener('change', function () { pr.flag(key(p, 'prep:' + i), cb.checked); });
+        lab.appendChild(cb); lab.appendChild(el('span', t)); li.appendChild(lab); ul.appendChild(li); li._cb = cb;
+      });
+      b.appendChild(ul);
+
+      var link = P.signupLink(p), su = el('div', null, 'signup');
+      var a = el('a', (link.referral ? 'Sign up on ' + p.name + ' (paid referral)' : 'Open ' + p.name + '’s sign-up page') + ' ↗', 'btn');
+      a.href = link.url; a.target = '_blank'; a.rel = link.referral ? 'noopener sponsored' : 'noopener';
+      su.appendChild(a);
+      su.appendChild(el('p', p.guide.quick, 'quick'));
+      if (link.referral) su.appendChild(el('p', link.disclosure, 'disclose'));
+      if (p.guide.signupNote) su.appendChild(el('p', p.guide.signupNote, 'muted'));
+      if (p.appLinks) {
+        var apps = el('div', null, 'applinks');
+        p.appLinks.forEach(function (x) { var l = el('a', x.label + ' ↗', 'btn secondary'); l.href = x.url; l.target = '_blank'; l.rel = 'noopener'; apps.appendChild(l); });
+        su.appendChild(apps);
+      }
+      su.appendChild(el('p', 'Opens the platform’s own site in a new tab. Come back here to set your status.', 'muted'));
+      b.appendChild(su);
+
+      section(b, 'Sign up, step by step');
+      var ol = el('ol', null, 'steps'); p.guide.steps.forEach(function (t) { ol.appendChild(el('li', t)); }); b.appendChild(ol);
+
+      section(b, 'Portfolio or certification');
+      b.appendChild(el('p', p.guide.portfolio));
+      section(b, 'Finding and applying for work');
+      b.appendChild(el('p', p.guide.findWork));
+
+      section(b, 'Getting paid');
+      var dl = el('dl', null, 'pay');
+      facts.payment.forEach(function (r) { dl.appendChild(el('dt', r[0])); dl.appendChild(el('dd', r[1])); });
+      b.appendChild(dl);
+      if (p.discrepancies.length) {
+        var dif = el('div', null, 'differ');
+        dif.appendChild(el('strong', p.name + '’s own pages disagree'));
+        list(dif, p.discrepancies);
+        b.appendChild(dif);
+      }
+
+      section(b, 'Common reasons for rejection');
+      list(b, p.guide.rejections);
+      section(b, 'Scam warnings');
+      list(b, P.SCAMS, 'flags');
+
+      section(b, 'Your application');
+      var st = el('div', null, 'status'); st.setAttribute('role', 'radiogroup'); st.setAttribute('aria-label', 'Your ' + p.name + ' application status');
+      var radiosFor = [];
+      STATES.forEach(function (x) {
+        var lab = el('label', null, 'opt'), r = el('input'); r.type = 'radio'; r.name = 'status-' + p.id; r.value = x[0];
+        r.addEventListener('change', function () { if (r.checked) setStatus(p, x[0]); });
+        lab.appendChild(r); lab.appendChild(document.createTextNode(x[1])); st.appendChild(lab); radiosFor.push(r);
+      });
+      b.appendChild(st);
+      var next = el('div', null, 'nextact'); b.appendChild(next);
+
+      b.appendChild(el('p', 'Checked ' + p.checked + '. Sources:', 'facts'));
+      var srcs = el('ul', null, 'facts');
+      p.sources.forEach(function (u) { var li = el('li'), l = el('a', u.replace(/^https:\/\/(www\.)?/, '')); l.href = u; l.target = '_blank'; l.rel = 'noopener'; li.appendChild(l); srcs.appendChild(li); });
+      b.appendChild(srcs);
+
+      guides.appendChild(d);
+      cards[p.id] = { d: d, fit: fit, pill: pill, ul: ul, prepNote: prepNote, radios: radiosFor, next: next };
+    }
+
+    function renderGuides() {
+      P.GUIDES.forEach(function (p) {
+        var c = cards[p.id], s = status(p), n = prepCount(p);
+        c.pill.textContent = s ? STATES.filter(function (x) { return x[0] === s; })[0][1] : (n ? n + ' of ' + p.guide.prepare.length + ' ready' : 'Not started');
+        c.pill.className = 'pill' + (s === 'approved' ? ' done' : '');
+        if (answers) {
+          var ok = P.eligible(p, answers), early = ok && p.eligibility.needsSamples && answers.samples === 'none';
+          c.fit.textContent = early ? 'Needs samples first' : ok ? 'Open to you' : 'Check eligibility';
+          c.fit.hidden = false; c.fit.className = 'pill' + (ok && !early ? '' : ' warn');
+        }
+        else c.fit.hidden = true;
+        c.prepNote.textContent = n + ' of ' + p.guide.prepare.length + ' ready. Each tick is +20 XP.';
+        Array.prototype.forEach.call(c.ul.children, function (li, i) { li._cb.checked = pr.has(key(p, 'prep:' + i)); });
+        c.radios.forEach(function (r) { r.checked = r.value === s; });
+        c.next.textContent = '';
+        c.next.appendChild(el('strong', 'Next'));
+        var msg = s === 'submitted' ? p.guide.afterSubmit : s === 'approved' ? p.guide.afterApproved : s === 'declined' ? p.guide.afterDeclined
+          : n < p.guide.prepare.length ? 'Get the checklist above ready, then open the sign-up page.' : 'You are ready. Open the sign-up page, apply, then set your status to Submitted (+100 XP).';
+        c.next.appendChild(el('span', msg));
+        if (s === 'approved') { var t = el('a', ' Open your tracker'); t.href = 'tracker.html'; c.next.appendChild(t); c.next.appendChild(el('span', ' Log campaign applications there, not your account sign-up.')); }
+      });
+      renderMiles();
+    }
+
+    /* ---------- 3. Milestones ---------- */
+    function renderMiles() {
+      var any = function (fn) { return P.GUIDES.some(fn); };
+      var miles = [
+        ['Ready to apply', 'Every checklist item ticked for one platform', any(function (p) { return prepCount(p) === p.guide.prepare.length; })],
+        ['Application sent', 'Set one platform to Submitted', any(function (p) { return ['submitted', 'approved', 'declined'].indexOf(status(p)) >= 0; })],
+        ['Approved creator', 'You confirmed a platform approved you', any(function (p) { return status(p) === 'approved'; })]
+      ];
+      var box = document.getElementById('miles'); box.textContent = '';
+      miles.forEach(function (m) { var d = el('div', null, 'mile' + (m[2] ? ' earned' : '')); d.appendChild(el('strong', (m[2] ? '✓ ' : '') + m[0])); d.appendChild(el('span', m[1])); box.appendChild(d); });
+      document.getElementById('sync').textContent = pr.synced() ? 'Your checklist and statuses are saved to your account.' : 'Your checklist and statuses are saved in this browser.';
+    }
+
+    P.GUIDES.forEach(buildGuide);
+    pr.onChange(function () { tidy(); renderGuides(); });
+    tidy();
+    if (answers) showResult(); else renderGuides();
+    if (location.hash.indexOf('#guide-') === 0) { var t = document.getElementById(location.hash.slice(1)); if (t) t.open = true; }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+})();
+</script>
+</body>
+</html>

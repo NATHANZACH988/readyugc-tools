@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Job tracker · ReadyUGC</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="course.css">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+#rows input,#rows select{min-width:110px}
+#rows td{vertical-align:top}
+.del{background:none;border:1px solid currentColor;border-radius:8px;padding:6px 10px;cursor:pointer;color:inherit}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+</style>
+</head>
+<body>
+<main>
+<h1>Application and payment tracker</h1>
+<p class="lead">One row per application. Your entries are saved in this browser on this device.</p>
+<div class="note"><strong>Where your data is kept.</strong> Your rows are stored only in this browser, on this device, and are never sent to the site. Rows you add now are kept apart for each account, so someone else who signs in to the course on this browser does not see them. Rows saved before November 12, 2026 belong to no account: the next person to open this tracker on this browser is asked whether they are theirs. Nothing here is encrypted, so anyone using this device could still find the rows in the browser's storage. That also means they are not backed up: clearing your browser data, using private browsing, or opening this page in another browser or on another device will show an empty tracker. Download a backup after each session. To bring your rows back, use "Restore from a backup" and choose the file you downloaded.</div>
+<div class="card">
+<p class="result" id="summary"></p>
+<p class="muted" id="rate"></p>
+</div>
+<div class="actions">
+<button class="btn" id="add" type="button" disabled>Add an application</button>
+<button class="btn" id="csv" type="button" disabled>Download a backup (CSV)</button>
+<button class="btn" id="restore" type="button" disabled>Restore from a backup</button>
+<input id="file" type="file" accept=".csv,text/csv" hidden>
+</div>
+<div class="note" id="legacy" hidden>
+<p><strong>Rows from before accounts were kept apart.</strong> This browser has <span id="legacy-n"></span> saved before each account got its own tracker. We cannot tell whose they are. If you are the only person who uses this course on this browser, they are yours.</p>
+<div class="actions"><button class="btn" id="legacy-import" type="button">They are mine: add them to my tracker</button>
+<button class="btn" id="legacy-drop" type="button">Not mine: remove them from this browser</button></div>
+</div>
+<div class="tablewrap"><table>
+<thead><tr><th>Platform</th><th>Job or brand</th><th>Applied on</th><th>Status</th><th>Job price ($)</th><th>Fee (%)</th><th>Paid on</th><th></th></tr></thead>
+<tbody id="rows"></tbody>
+</table></div>
+<p class="muted" id="msg" role="status"></p>
+<p class="muted" id="empty">No applications yet. Add your first one above.</p>
+<p><a href="index.html">Back to ReadyUGC tools</a></p>
+</main>
+<script>
+/* Kept in this browser only, apart per account (course.js), so the next person on a shared computer never sees it. */
+var BASE_KEY = 'ugcTrackerV1', TRACKER_KEY = null;
+var STATUSES = ['Applied', 'Accepted', 'Filming', 'Submitted', 'Revision', 'Approved', 'Paid', 'Not selected'];
+var FIELDS = ['platform', 'job', 'applied', 'status', 'price', 'fee', 'paid'];
+var data = [];
+function load(){ try { var r = JSON.parse(localStorage.getItem(TRACKER_KEY)); if (Array.isArray(r)) data = r; } catch (e) { data = []; } }
+/* Returns false when the browser would not store the rows (storage full or blocked). */
+function save(){ if (!TRACKER_KEY) return false; try { localStorage.setItem(TRACKER_KEY, JSON.stringify(data)); return true; } catch (e) { return false; } }
+function num(v){ var n = parseFloat(v); return isFinite(n) && n > 0 ? n : 0; }
+function net(r){ return num(r.price) * (1 - Math.min(num(r.fee), 100) / 100); }
+function totals(){
+  var t = {n: data.length, won: 0, paid: 0, due: 0};
+  data.forEach(function(r){
+    if (['Accepted', 'Filming', 'Submitted', 'Revision', 'Approved', 'Paid'].indexOf(r.status) >= 0) t.won++;
+    if (r.status === 'Paid') t.paid += net(r);
+    if (['Submitted', 'Revision', 'Approved'].indexOf(r.status) >= 0) t.due += net(r);
+  });
+  return t;
+}
+function summary(){
+  var t = totals();
+  document.getElementById('summary').textContent = t.n + ' applications · ' + t.won + ' accepted · $' + t.paid.toFixed(2) + ' paid after fees';
+  document.getElementById('rate').textContent = (t.n ? 'Acceptance rate ' + Math.round(t.won / t.n * 100) + '%. ' : '') + 'Awaiting approval or payment: $' + t.due.toFixed(2) + ' after fees.';
+  document.getElementById('empty').hidden = t.n > 0;
+}
+function input(r, f, type){
+  var el;
+  if (f === 'status') { el = document.createElement('select'); STATUSES.forEach(function(s){ var o = document.createElement('option'); o.value = s; o.textContent = s; el.appendChild(o); }); }
+  else { el = document.createElement('input'); el.type = type; if (type === 'number') { el.min = '0'; el.step = 'any'; } }
+  el.value = r[f] == null ? '' : r[f];
+  el.setAttribute('aria-label', f);
+  el.addEventListener('input', function(){ r[f] = el.value; save(); summary(); });
+  el.addEventListener('change', function(){ r[f] = el.value; save(); summary(); });
+  var td = document.createElement('td'); td.appendChild(el); return td;
+}
+function render(){
+  var body = document.getElementById('rows'); body.textContent = '';
+  data.forEach(function(r, i){
+    var tr = document.createElement('tr');
+    tr.appendChild(input(r, 'platform', 'text'));
+    tr.appendChild(input(r, 'job', 'text'));
+    tr.appendChild(input(r, 'applied', 'date'));
+    tr.appendChild(input(r, 'status', 'select'));
+    tr.appendChild(input(r, 'price', 'number'));
+    tr.appendChild(input(r, 'fee', 'number'));
+    tr.appendChild(input(r, 'paid', 'date'));
+    var td = document.createElement('td'), b = document.createElement('button');
+    b.type = 'button'; b.className = 'del'; b.textContent = 'Remove';
+    b.addEventListener('click', function(){ if (confirm('Remove this row?')) { data.splice(i, 1); save(); render(); } });
+    td.appendChild(b); tr.appendChild(td); body.appendChild(tr);
+  });
+  summary();
+}
+function cell(v){ v = String(v == null ? '' : v); if (/^[=+\-@]/.test(v)) v = "'" + v; return '"' + v.replace(/"/g, '""') + '"'; }
+function toCsv(){
+  var lines = [['Platform', 'Job or brand', 'Applied on', 'Status', 'Job price', 'Fee %', 'Paid on', 'After fee'].map(cell).join(',')];
+  data.forEach(function(r){ lines.push(FIELDS.map(function(f){ return cell(r[f]); }).concat([cell(net(r).toFixed(2))]).join(',')); });
+  return lines.join('\r\n');
+}
+document.getElementById('add').addEventListener('click', function(){
+  data.push({platform: '', job: '', applied: new Date().toISOString().slice(0, 10), status: 'Applied', price: '', fee: '', paid: ''});
+  save(); render();
+});
+document.getElementById('csv').addEventListener('click', function(){
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([toCsv()], {type: 'text/csv'}));
+  a.download = 'ugc-tracker.csv'; document.body.appendChild(a); a.click(); a.remove();
+});
+function parseCsv(text){
+  var rows = [], row = [], cur = '', q = false;
+  for (var i = 0; i < text.length; i++) {
+    var c = text[i];
+    if (q) { if (c === '"') { if (text[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += c; }
+    else if (c === '"') q = true;
+    else if (c === ',') { row.push(cur); cur = ''; }
+    else if (c === '\n' || c === '\r') { if (c === '\r' && text[i + 1] === '\n') i++; row.push(cur); cur = ''; rows.push(row); row = []; }
+    else cur += c;
+  }
+  if (cur !== '' || row.length) { row.push(cur); rows.push(row); }
+  return rows;
+}
+function fromCsv(text){
+  var rows = parseCsv(text).filter(function(r){ return r.length >= 7; });
+  if (!rows.length || rows[0][0] !== 'Platform') return null;
+  return rows.slice(1).map(function(r){
+    var o = {};
+    FIELDS.forEach(function(f, i){ var v = String(r[i] || '').slice(0, 200); if (/^'[=+\-@]/.test(v)) v = v.slice(1); o[f] = v; });
+    if (STATUSES.indexOf(o.status) < 0) o.status = 'Applied';
+    return o;
+  });
+}
+function say(t){ document.getElementById('msg').textContent = t; }
+document.getElementById('restore').addEventListener('click', function(){ document.getElementById('file').click(); });
+document.getElementById('file').addEventListener('change', function(e){
+  var f = e.target.files[0]; if (!f) return;
+  var rd = new FileReader();
+  rd.onload = function(){
+    var rows = fromCsv(String(rd.result));
+    if (!rows) { say('That file is not a tracker backup. Nothing was changed.'); return; }
+    if (data.length && !confirm('Replace the ' + data.length + ' rows shown now with the ' + rows.length + ' rows in the backup?')) return;
+    data = rows; save(); render(); say('Restored ' + rows.length + ' rows from the backup.');
+  };
+  rd.onerror = function(){ say('The file could not be read. Nothing was changed.'); };
+  rd.readAsText(f); e.target.value = '';
+});
+/* Rows saved before each account had its own tracker: under the old tracker key, or (an older bug wrote them over
+   the course progress key) where course.js set them aside. Only arrays are tracker rows. */
+function legacySources(){
+  var out = [];
+  [BASE_KEY, typeof KEY === 'string' ? KEY + ':tracker-rows' : null].forEach(function(k){
+    if (!k || k === TRACKER_KEY) return;
+    try { var r = JSON.parse(localStorage.getItem(k)); if (Array.isArray(r) && r.length) out.push({ key: k, rows: r }); } catch (e) {}
+  });
+  return out;
+}
+function offerLegacy(){
+  var src = legacySources(), box = document.getElementById('legacy');
+  var n = src.reduce(function(a, x){ return a + x.rows.length; }, 0);
+  box.hidden = !n;
+  if (!n) return;
+  document.getElementById('legacy-n').textContent = n === 1 ? '1 row' : n + ' rows';
+  document.getElementById('legacy-import').onclick = function(){
+    /* Save the combined rows first; remove the old copies only once that worked, so a failed save loses nothing. */
+    var before = data;
+    src.forEach(function(x){ data = data.concat(x.rows); });
+    if (!save()) { data = before; say('Your browser would not save the rows, so nothing was moved. Free some space or download a backup, then try again.'); return; }
+    src.forEach(function(x){ try { localStorage.removeItem(x.key); } catch (e) {} });
+    render(); box.hidden = true; say('Added ' + n + (n === 1 ? ' row' : ' rows') + ' to your tracker.');
+  };
+  document.getElementById('legacy-drop').onclick = function(){
+    if (!confirm('Remove these rows from this browser? Download a backup first if anyone might need them.')) return;
+    src.forEach(function(x){ try { localStorage.removeItem(x.key); } catch (e) {} });
+    box.hidden = true; say('Removed. Your tracker is unchanged.');
+  };
+}
+/* Start once course.js knows who is signed in; opened as a plain file, start at once.
+   Until then the buttons stay off, so nothing typed early is lost when the saved rows load. */
+document.addEventListener('DOMContentLoaded', function(){
+  var pr = window.CourseProgress;
+  (pr ? pr.ready : function(f){ f(); })(function(){
+    TRACKER_KEY = pr ? pr.localKey(BASE_KEY) : BASE_KEY;
+    load(); render(); offerLegacy();
+    ['add', 'csv', 'restore'].forEach(function(id){ document.getElementById(id).disabled = false; });
+  });
+});
+</script>
+</body>
+</html>

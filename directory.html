@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Platform directory · ReadyUGC</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="course.css">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+</head>
+<body>
+<main>
+<p><a href="index.html">← ReadyUGC tools</a></p>
+<h1>Platform directory</h1>
+<p class="muted" id="disclosure" hidden>Some "Apply" links below are referral links. If you sign up through one, the publisher of this kit may earn a fee. It costs you nothing, and listings are included on the same criteria either way.</p>
+
+<p>The directory has two parts, because they are two different ways of earning. Part A is paid assignments: a brand pays you a set amount when it approves your video. Part B is programmes that pay only if your content gets views or sales. If you came for paid assignments, work through Part A first.</p>
+<p class="muted">"No followers needed" means the platform's own page says so. Every listing is included on the same criteria whether or not it pays a referral fee.</p>
+<h3>Part A. Paid for each approved job</h3>
+<p>You apply, a brand picks you, you deliver, and you are paid the amount shown on the job (less the platform fee) once the video is approved. No audience is needed to be paid, though some of these want to see samples first.</p>
+<div id="platforms"></div>
+<h3>Part B. Paid only on views or sales</h3>
+<p class="note"><strong>These are not paid assignments.</strong> Nobody pays you for making the video. You earn only if your own posts get views, or if people buy through your video. Most need an account with followers, and you can do the work and earn nothing. Treat them as something to try later, alongside Part A. Whenever you post paid or gifted content on your own accounts, say clearly in the post that it is an ad.</p>
+<div id="programmes"></div>
+
+<h3>Check these before you apply anywhere</h3>
+<ul class="checklist">
+<li>You are 18 or older and live in a country the platform accepts.</li>
+<li>You have a PayPal account (or the payout method that platform uses) in your own name.</li>
+<li>You have read what rights the brand gets to your video and for how long.</li>
+</ul>
+
+
+<div id="stories" hidden></div>
+</main>
+<script src="platforms.js"></script>
+<script>
+/* The platform directory reads platforms.js, the one record per platform that the sign-up guides also use.
+   To correct a fact, or to add an approved referral link, edit platforms.js. */
+/* Add a story only if it is real. "source" must be a public link or the words "shared with permission". */
+var STORIES = [
+  {who: 'Megan Spencer, writing in Entrepreneur, January 14, 2026',
+   text: 'Left a government job after becoming a mother and moved into UGC without a large following. Her account is self-reported, and she also runs a creator education business.',
+   source: 'https://www.entrepreneur.com/science-technology/how-i-made-6-figures-online-without-becoming-an-influencer/500955'},
+  {who: 'Insense (platform figure)',
+   text: 'Insense states it has paid creators $8 million since 2020, and quotes one creator earning $300 per partnership. Platform-reported.',
+   source: 'https://insense.pro/for-creators'}
+];
+
+function el(tag, text, cls){ var e = document.createElement(tag); if (text) e.textContent = text; if (cls) e.className = cls; return e; }
+function safeUrl(u){ return /^https:\/\//.test(u) ? u : ''; }
+
+(function(){
+  var P = window.UGC_PLATFORMS;
+  var jobs = document.getElementById('platforms'), progs = document.getElementById('programmes'), anyRef = false, lastGroup = '', nJobs = 0, nProgs = 0;
+  P.DIRECTORY_ORDER.map(P.byId).forEach(function(p){
+    var perf = p.group === 'performance', box = perf ? progs : jobs, rows = P.directoryRows(p);
+    if (!perf && p.group !== lastGroup) { var g = el('p'); g.appendChild(el('strong', P.GROUPS[p.group])); box.appendChild(g); lastGroup = p.group; }
+    var card = el('div', '', 'card plat');
+    var head = el('div', '', 'plat-head');
+    head.appendChild(el('h3', (perf ? 'B' + (++nProgs) : 'A' + (++nJobs)) + '. ' + p.name));
+    card.appendChild(head);
+    var tags = el('p');
+    p.tags.forEach(function(t){ tags.appendChild(el('span', t, t === 'Start here' ? 'tag hot' : 'tag')); });
+    card.appendChild(tags);
+    card.appendChild(el('p', p.what));
+    /* The facts a beginner needs first stay in view; the rest folds out. */
+    var row = function(dl, r){ if (r[1]) { dl.appendChild(el('dt', r[0])); dl.appendChild(el('dd', r[1])); } };
+    var dl = el('dl');
+    rows.main.forEach(function(r){ row(dl, r); });
+    card.appendChild(dl);
+    var more = el('details'), more_dl = el('dl');
+    more.appendChild(el('summary', 'What you need to apply, cost and sources'));
+    rows.more.forEach(function(r){ row(more_dl, r); });
+    more.appendChild(more_dl);
+    card.appendChild(more);
+    var link = P.signupLink(p), wrap = el('p');
+    if (link.referral) anyRef = true;
+    if (link.url) {
+      var a = el('a', link.referral ? 'Apply (referral link)' : 'Go to creator sign-up', 'btn');
+      a.href = link.url; a.target = '_blank'; a.rel = link.referral ? 'noopener sponsored' : 'noopener';
+      wrap.style.marginTop = '14px'; wrap.appendChild(a);
+    }
+    if (p.guide) { var gl = el('a', 'Step-by-step guide'); gl.href = 'platforms.html#guide-' + p.id; gl.style.marginLeft = '14px'; wrap.appendChild(gl); }
+    card.appendChild(wrap);
+    box.appendChild(card);
+  });
+  if (anyRef) document.getElementById('disclosure').hidden = false;
+
+  var s = document.getElementById('stories');
+  STORIES.forEach(function(x){
+    var card = el('div', '', 'card');
+    card.appendChild(el('h3', x.who));
+    card.appendChild(el('p', x.text));
+    var src = safeUrl(x.source);
+    if (src) { var a = el('a', 'Read the source'); a.href = src; a.target = '_blank'; a.rel = 'noopener'; var p = el('p'); p.appendChild(a); card.appendChild(p); }
+    else { card.appendChild(el('p', x.source, 'muted')); }
+    s.appendChild(card);
+  });
+})();
+</script>
+</body>
+</html>

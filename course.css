@@ -1,0 +1,198 @@
+/* Course experience: progress hub, lesson navigation, badges and "mark done" cards.
+   Loaded after style.css on every paid course page. Worksheet PDFs and the sales page do not use it. */
+:root {
+  --bg: #f6f4ef; --card: #ffffff; --ink: #1d2126; --muted: #5a6370; --line: #e4e0d6;
+  --accent: #17795f; --accent-ink: #ffffff; --soft: #e8f4ef; --warn: #8a5a00;
+  --gold: #f0a63a; --gold-soft: #fff3df; --danger: #b3412f; --danger-soft: #fdecea;
+  --shadow: 0 1px 2px rgba(20, 30, 40, .06), 0 6px 20px rgba(20, 30, 40, .06);
+  --radius: 16px;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #111417; --card: #1a1f24; --ink: #e9ecef; --muted: #a2abb6; --line: #2b323a;
+    --accent: #4fc79f; --accent-ink: #08201a; --soft: #16302a; --warn: #e6b866;
+    --gold: #f5b955; --gold-soft: #3a2e17; --danger: #f08a78; --danger-soft: #3a1f1b;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25); }
+}
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } }
+body { background: var(--bg); }
+a { color: var(--accent); }
+.card { border-radius: var(--radius); box-shadow: var(--shadow); border-color: var(--line); }
+.btn { border-radius: 999px; transition: transform .12s ease, filter .12s ease; }
+.btn:hover { filter: brightness(1.06); transform: translateY(-1px); }
+.note { border-left: 4px solid var(--accent); border-radius: 0 12px 12px 0; }
+
+/* ---------- Top bar on lesson pages ---------- */
+.topbar { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 16px; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line); font-size: .92rem; }
+.topbar a { text-decoration: none; font-weight: 600; }
+.tb-progress { display: flex; align-items: center; gap: 10px; color: var(--muted); white-space: nowrap; }
+.mini-bar { width: 90px; height: 8px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.mini-bar i, .readbar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--gold)); transition: width .4s ease; }
+.readbar { position: fixed; left: 0; right: 0; top: 0; height: 3px; z-index: 30; }
+.readbar i { transition: none; }
+.has-topbar main > p.noprint:first-child { display: none; }
+
+/* ---------- Lesson layout and contents ---------- */
+.layout { display: block; }
+.toc { max-width: 760px; margin: 16px auto 0; padding: 0 16px; }
+.toc details { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 4px 16px; }
+.toc summary { cursor: pointer; font-weight: 700; padding: 10px 0; }
+.toc ol { list-style: none; margin: 0 0 10px; padding: 0; }
+.toc li a { display: flex; gap: 10px; align-items: center; padding: 7px 8px; border-radius: 10px; color: var(--ink); text-decoration: none; font-size: .93rem; line-height: 1.35; }
+.toc li a:hover { background: var(--soft); }
+.toc li a.current { background: var(--soft); color: var(--accent); font-weight: 600; }
+.toc .dot { flex: none; width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; font-size: .72rem; font-weight: 700; color: var(--muted); }
+.toc a.done .dot { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+@media (min-width: 1100px) {
+  .layout { display: grid; grid-template-columns: 260px minmax(0, 760px); justify-content: center; gap: 40px; padding: 0 24px; }
+  .layout main { margin: 0; }
+  .toc { margin: 0; padding: 32px 0 0; position: sticky; top: 48px; align-self: start; max-height: calc(100vh - 64px); overflow: auto; }
+}
+
+/* Section headings become chapter headings */
+main h2 { border-top: 0; margin-top: 56px; display: flex; align-items: center; gap: 12px; scroll-margin-top: 64px; font-size: 1.45rem; }
+main h2 .num { flex: none; width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; font-size: 1rem;
+  background: var(--soft); color: var(--accent); }
+main h2.is-done .num { background: var(--accent); color: var(--accent-ink); }
+main h2 .chip { margin-left: auto; font-size: .75rem; font-weight: 600; color: var(--accent); background: var(--soft); padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
+main h3 { scroll-margin-top: 64px; }
+
+/* Numbered step lists as a timeline */
+ol.steps { list-style: none; counter-reset: st; padding-left: 0; }
+ol.steps > li { counter-increment: st; position: relative; padding: 2px 0 14px 46px; margin: 0; }
+ol.steps > li::before { content: counter(st); position: absolute; left: 0; top: 0; width: 30px; height: 30px; border-radius: 50%;
+  background: var(--card); border: 2px solid var(--accent); color: var(--accent); font-weight: 700; font-size: .9rem; display: grid; place-items: center; }
+ol.steps > li:not(:last-child)::after { content: ""; position: absolute; left: 15px; top: 32px; bottom: 2px; width: 2px; background: var(--line); }
+
+/* Tables */
+.tablewrap { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); margin: 14px 0; }
+.tablewrap table th { background: var(--soft); color: var(--ink); }
+.tablewrap tr:last-child td { border-bottom: 0; }
+
+/* Copyable templates */
+.tpl { position: relative; padding-top: 40px; border-radius: 0 12px 12px 0; }
+.copy { position: absolute; top: 8px; right: 8px; font: inherit; font-size: .82rem; font-weight: 600; padding: 4px 12px; border-radius: 999px;
+  border: 1px solid var(--accent); background: var(--card); color: var(--accent); cursor: pointer; }
+.copy.ok { background: var(--accent); color: var(--accent-ink); }
+
+/* Red flags and checklists */
+ul.flags { list-style: none; padding: 0; display: grid; gap: 10px; }
+ul.flags li { max-width: none; background: var(--danger-soft); border-radius: 12px; padding: 12px 14px 12px 44px; position: relative; }
+ul.flags li::before { content: "🚩"; position: absolute; left: 14px; top: 11px; }
+ul.checklist { list-style: none; padding: 0; }
+ul.checklist li { position: relative; padding: 8px 0 8px 40px; }
+ul.checklist input { position: absolute; left: 0; top: 8px; width: 24px; height: 24px; accent-color: var(--accent); }
+ul.checklist label { display: inline; color: inherit; font-size: inherit; margin: 0; cursor: pointer; }
+
+/* Platform cards */
+.plat { padding: 20px; }
+.plat h3 { font-size: 1.25rem; }
+.plat-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.plat .tag { background: var(--soft); color: var(--accent); border-color: transparent; font-weight: 600; margin: 0 6px 6px 0; }
+.plat .tag.hot { background: var(--gold-soft); color: var(--warn); }
+.plat details { margin-top: 10px; border-top: 1px dashed var(--line); padding-top: 8px; }
+.plat summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+
+/* "Mark done" card at the end of each lesson step */
+.finish { margin: 28px 0 8px; padding: 18px 20px; border-radius: var(--radius); background: linear-gradient(135deg, var(--soft), var(--gold-soft));
+  border: 1px solid var(--line); display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; }
+.finish-text { flex: 1 1 220px; }
+.finish-eyebrow { display: block; font-size: .78rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.finish .btn.is-done { background: var(--card); color: var(--accent); border: 2px solid var(--accent); }
+.next-link { font-weight: 600; text-decoration: none; }
+.next-link:hover { text-decoration: underline; }
+
+/* ---------- Course home ---------- */
+.hero { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; background: var(--card); border: 1px solid var(--line);
+  border-radius: 22px; box-shadow: var(--shadow); padding: 24px; margin-bottom: 20px;
+  background-image: radial-gradient(circle at 100% 0, var(--gold-soft), transparent 45%), radial-gradient(circle at 0 100%, var(--soft), transparent 50%); }
+.hero h1 { margin-bottom: 6px; }
+.hero .lead { margin: 0 0 12px; }
+.hero-text { flex: 1 1 300px; }
+.eyebrow { margin: 0 0 4px; font-size: .78rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+.ring { position: relative; width: 132px; height: 132px; flex: none; }
+.ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ring circle { fill: none; stroke-width: 12; }
+.ring .track { stroke: var(--line); }
+.ring .fill { stroke: url(#ringGrad); stroke-linecap: round; transition: stroke-dashoffset .8s cubic-bezier(.2, .8, .2, 1); }
+.ring-label { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; line-height: 1.1; }
+.ring-label strong { font-size: 1.7rem; }
+.ring-label span { font-size: .78rem; color: var(--muted); }
+.stats { display: flex; flex-wrap: wrap; gap: 8px; }
+.stat { background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; font-size: .9rem; }
+.stat strong { font-variant-numeric: tabular-nums; }
+
+.next { display: flex; flex-wrap: wrap; gap: 14px 20px; align-items: center; padding: 20px 22px; border-radius: var(--radius);
+  background: var(--accent); color: var(--accent-ink); box-shadow: var(--shadow); margin-bottom: 8px; }
+.next .eyebrow { color: inherit; opacity: .8; }
+.next h2 { all: unset; display: block; font-size: 1.3rem; font-weight: 700; }
+.next p { margin: 4px 0 0; opacity: .9; }
+.next-body { flex: 1 1 260px; }
+.next .btn { background: var(--accent-ink); color: var(--accent); }
+
+.badges { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin: 12px 0 8px; }
+.badge { text-align: center; padding: 14px 10px; border-radius: var(--radius); background: var(--card); border: 1px solid var(--line); }
+.badge .icon { font-size: 2rem; display: block; filter: grayscale(1); opacity: .35; transition: all .4s ease; }
+.badge strong { display: block; font-size: .9rem; margin-top: 4px; }
+.badge span { font-size: .78rem; color: var(--muted); }
+.badge.earned { border-color: var(--gold); background: var(--gold-soft); }
+.badge.earned .icon { filter: none; opacity: 1; }
+.badge.pop { animation: pop .6s ease; }
+@keyframes pop { 0% { transform: scale(1); } 40% { transform: scale(1.12); } 100% { transform: scale(1); } }
+
+.stage { margin-top: 30px; }
+.stage-head { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.stage-head h2 { margin: 0; font-size: 1.2rem; }
+.stage-head .icon { font-size: 1.5rem; }
+.stage-head .count { margin-left: auto; font-size: .85rem; color: var(--muted); font-weight: 600; }
+.stage-list { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+.step { display: flex; gap: 14px; align-items: flex-start; padding: 14px 18px; border-top: 1px solid var(--line); }
+.step:first-child { border-top: 0; }
+.step.is-next { background: var(--soft); }
+.step input { appearance: none; -webkit-appearance: none; flex: none; width: 28px; height: 28px; margin: 2px 0 0; border-radius: 50%;
+  border: 2px solid var(--line); background: var(--card); cursor: pointer; display: grid; place-items: center; transition: all .2s ease; }
+.step input:hover { border-color: var(--accent); }
+.step input:checked { background: var(--accent); border-color: var(--accent); }
+.step input:checked::after { content: "✓"; color: var(--accent-ink); font-weight: 800; font-size: .95rem; }
+.step input:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.step a { font-weight: 650; text-decoration: none; color: var(--ink); }
+.step a:hover { color: var(--accent); }
+.step.done a { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--line); }
+.step p { margin: 2px 0 0; }
+.step .xp { margin-left: auto; flex: none; font-size: .78rem; font-weight: 700; color: var(--warn); background: var(--gold-soft); border-radius: 999px; padding: 3px 9px; }
+.step.done .xp { opacity: .5; }
+
+ul.sheets { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+ul.sheets li a { display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: var(--card); border: 1px solid var(--line);
+  border-radius: var(--radius); box-shadow: var(--shadow); text-decoration: none; font-weight: 600; height: 100%; }
+ul.sheets li a::before { content: "⬇"; display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 10px; background: var(--soft); }
+.finished { text-align: center; padding: 26px 20px; border-radius: var(--radius); background: var(--gold-soft); border: 1px solid var(--gold); margin-bottom: 8px; }
+.finished .big { font-size: 2.6rem; display: block; }
+
+/* Toast and confetti */
+.toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 120px); z-index: 50; background: var(--ink); color: var(--bg);
+  padding: 12px 20px; border-radius: 999px; font-weight: 600; box-shadow: var(--shadow); transition: transform .35s cubic-bezier(.2, .8, .2, 1); max-width: calc(100% - 32px); text-align: center; }
+.toast.show { transform: translate(-50%, 0); }
+.confetti { position: fixed; top: -12px; z-index: 40; width: 9px; height: 14px; border-radius: 2px; pointer-events: none; animation: fall 1.6s ease-in forwards; }
+@keyframes fall { to { transform: translateY(105vh) rotate(720deg); opacity: .6; } }
+
+@media (max-width: 560px) {
+  .hero { padding: 18px; } .ring { width: 104px; height: 104px; } .ring-label strong { font-size: 1.35rem; }
+  .step .xp { display: none; } main h2 { font-size: 1.25rem; } main h2 .chip { display: none; }
+}
+/* Until the account confirms whose progress this is, progress is not shown (course.js). */
+html.cp-loading #hub .ring .fill, html.cp-loading #hub .ring-label, html.cp-loading #hub .stats, html.cp-loading #next,
+html.cp-loading #badges, html.cp-loading #steps, html.cp-loading #where, html.cp-loading .tb-progress, html.cp-loading .finish .btn,
+html.cp-loading ul.checklist input, html.cp-loading .cp-wait { visibility: hidden; }
+.cp-notice { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 50; margin: 0; max-width: calc(100vw - 32px);
+  background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 999px; font-size: .95rem; text-align: center; }
+@media print { .topbar, .readbar, .toc, .finish, .copy, .toast, .next, .badges { display: none !important; } }
+
+/* Tools site */
+a { color: var(--accent); }
+a.tool { display: block; text-decoration: none; color: inherit; }
+a.tool:hover, a.tool:focus-visible { border-color: var(--accent); }
+a.tool h2 { border: 0; margin: 0 0 6px; padding: 0; color: var(--accent); }
+a.tool p { margin: 0; }
