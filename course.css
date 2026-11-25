@@ -1,15 +1,15 @@
 /* Course experience: progress hub, lesson navigation, badges and "mark done" cards.
    Loaded after style.css on every paid course page. Worksheet PDFs and the sales page do not use it. */
 :root {
-  --bg: #f6f4ef; --card: #ffffff; --ink: #1d2126; --muted: #5a6370; --line: #e4e0d6;
-  --accent: #17795f; --accent-ink: #ffffff; --soft: #e8f4ef; --warn: #8a5a00;
+  --bg: #F4ECE2; --card: #FFFBF6; --ink: #141110; --muted: #5E564F; --line: #E2D7C8;
+  --accent: #C2391B; --accent-ink: #ffffff; --soft: #F7E3D9; --warn: #8a5a00;
   --gold: #f0a63a; --gold-soft: #fff3df; --danger: #b3412f; --danger-soft: #fdecea;
   --shadow: 0 1px 2px rgba(20, 30, 40, .06), 0 6px 20px rgba(20, 30, 40, .06);
   --radius: 16px;
 }
 @media (prefers-color-scheme: dark) {
-  :root { --bg: #111417; --card: #1a1f24; --ink: #e9ecef; --muted: #a2abb6; --line: #2b323a;
-    --accent: #4fc79f; --accent-ink: #08201a; --soft: #16302a; --warn: #e6b866;
+  :root { --bg: #141110; --card: #1E1A18; --ink: #F4ECE2; --muted: #A89F95; --line: #2E2825;
+    --accent: #FF5533; --accent-ink: #141110; --soft: #2A2421; --warn: #e6b866;
     --gold: #f5b955; --gold-soft: #3a2e17; --danger: #f08a78; --danger-soft: #3a1f1b;
     --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25); }
 }

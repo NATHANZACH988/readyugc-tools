@@ -1,10 +1,10 @@
 :root {
-  --bg: #fbfaf7; --card: #ffffff; --ink: #1f2328; --muted: #5c6470;
-  --line: #e3e0d8; --accent: #1f6f5c; --accent-ink: #ffffff; --soft: #eef5f2; --warn: #8a5a00;
+  --bg: #F4ECE2; --card: #FFFBF6; --ink: #141110; --muted: #5E564F;
+  --line: #E2D7C8; --accent: #C2391B; --accent-ink: #ffffff; --soft: #F7E3D9; --warn: #8a5a00; --lime: #DDF46A;
 }
 @media (prefers-color-scheme: dark) {
-  :root { --bg: #14171a; --card: #1c2024; --ink: #e8eaed; --muted: #a0a8b3;
-    --line: #2c3238; --accent: #5cc2a6; --accent-ink: #0d1a16; --soft: #1a2a26; --warn: #e0b060; }
+  :root { --bg: #141110; --card: #1E1A18; --ink: #F4ECE2; --muted: #A89F95;
+    --line: #2E2825; --accent: #FF5533; --accent-ink: #141110; --soft: #2A2421; --warn: #e0b060; --lime: #DDF46A; }
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink);
@@ -38,3 +38,12 @@ input, select { width: 100%; padding: 9px 10px; border: 1px solid var(--line); b
 .row button, .small { background: transparent; border: 1px solid var(--line); color: var(--muted); border-radius: 6px; padding: 8px 10px; cursor: pointer; }
 @media (max-width: 560px) { .row { grid-template-columns: 1fr 1fr; } h1 { font-size: 1.6rem; } }
 @media print { .btn, .noprint { display: none; } body { background: #fff; } }
+
+/* ReadyUGC brand (Nov 25, 2026) */
+.brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:1.2rem;letter-spacing:-.03em;text-decoration:none;color:var(--ink);margin:0 0 18px}
+.brand i{width:11px;height:11px;border-radius:50%;background:#FF5533;display:inline-block}
+.brand em{font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif;font-style:italic;font-weight:400;letter-spacing:-.01em;font-size:1.1em}
+.academy{border:2px solid var(--ink);border-radius:18px;padding:20px;margin:22px 0;background:var(--card)}
+.academy .eyebrow{margin:0 0 4px;font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.academy h3{margin:0 0 6px;font-size:1.35rem}
+.academy p{margin:6px 0}

@@ -60,6 +60,7 @@ dl.pay dd{margin:0}
 </head>
 <body>
 <main>
+<a class="brand" href="index.html" aria-label="ReadyUGC tools home"><i aria-hidden="true"></i><span>Ready<em>UGC</em></span></a>
 <h1>Sign up on your first platform</h1>
 <p class="lead">Answer five quick questions and get one place to start. Then follow its guide: what to prepare, how to sign up and what to do next.</p>
 <p class="note">Signing up is free on every platform here. Nothing in this course promises you will be accepted or paid. Facts were checked on each platform's own pages on November 11, 2026, and each guide names its sources. Confirm on the platform before you rely on them.</p>
@@ -174,6 +175,13 @@ dl.pay dd{margin:0}
       }
       box.appendChild(el('p', 'This is a suggestion, not a rule. Every guide below stays open to read.', 'muted'));
       result.appendChild(box);
+      var ac = el('div', null, 'academy');
+      ac.appendChild(el('p', 'Next step, if you want it', 'eyebrow'));
+      ac.appendChild(el('h3', 'Film your first ad in the ReadyUGC Academy'));
+      ac.appendChild(el('p', 'Daily missions plus an in-app studio that checks your light, sound and timing before you apply. Opens Black Friday, Nov 27: $67 until Dec 8, then $97. 7-day refunds.', ''));
+      ac.appendChild(el('p', 'No promise of work or income. Brands choose who they hire.', 'muted'));
+      var fl = el('a', 'Follow @readyugc for launch day', 'btn secondary'); fl.href = 'https://www.instagram.com/readyugc/'; ac.appendChild(fl);
+      result.appendChild(ac);
       renderGuides();
     }
     function read() {
